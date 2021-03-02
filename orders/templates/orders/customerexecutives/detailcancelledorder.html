@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <h1>Cancelled Order Details</h1>
+                Order ID: {{ order.order_id }}<br>
+                Customer Username: {{ order.user }}<br>
+                Order Amount: Rs {{ order.amount }}/-<br>
+                Order Cancelled on : {{ order.cancelled_order_date }}<br><br>   
+
+                {% if app_req %}
+                    <h6>Cancellation request pending for approval</h6>
+                {% else %}
+                    <a href="{% url 'orders:createcancellationapproval' order_id=order.order_id %}">Request Sales Executive for cancellation approval</a>
+                {% endif %}                
+            </div>
+        </div>
+    </article>
+
+{% endblock %}

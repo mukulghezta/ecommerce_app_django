@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <h1>Course</h1>
+                <h3>Course: {{ product.product_name }}</h3>
+                <h3>Price: {{ product.product_price }}</h3>
+                <h3>By: {{ product.product_seller }}</h3>
+
+                {% if user.is_customer %}
+                <a href="{% url 'orders:createorder'  product_id=product.product_id %}">Buy</a>
+                {% endif %}
+            </div>
+        </div>
+    </article>
+
+{% endblock %}

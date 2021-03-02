@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+{% if user.is_customer %}
+    <h1>Welcome to Online Upskilling Course Company</h1><br>
+    <h3>Courses Available</h3>
+    {% for i in products %}
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata"></div>
+                <h3><a href="{% url 'products:productdetail' product_id=i.product_id %}">{{ i.product_name }}</a></h3>
+                <h6>By:{{ i.product_seller }}<br>
+                Price: {{ i.product_price }}</h6><br>
+            </div>
+        </article>
+    {% endfor %}
+{% elif user.is_customerexecutive %}
+    <h1>Welcome to Online Upskilling Course Company</h1>
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata"></div>
+            <h2>You are logged in as customer executive.</h2><br>
+            <a href="{% url 'orders:allcancelledorders' %}">View all cancelled orders by customers</a>
+        </div>
+    </article>
+
+    <article class="media content-section">
+        <div class="media-body">
+            <h2>Available Courses</h2>
+            {% for i in products %}
+            <div class="article-metadata"></div>
+            <h3><a href="{% url 'products:productdetail' product_id=i.product_id %}">{{ i.product_name }}</a><h3>
+            <h6>Price: {{ i.product_seller }}</h6>
+            <h6>Price: {{ i.product_price }}</h6>
+            {% endfor %}
+        </div>
+    </article>
+{% elif user.is_salesexecutive %}
+    <h1>Welcome to Online Upskilling Course Company</h1>
+
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata"></div>
+            <h2>You are logged in as sales executive.</h2><br>
+            <a href="{% url 'orders:approvalrequestsall' %}">View all pending requests for approval.</a>
+        </div>
+    </article>
+
+    {% for i in products %}
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                <h3><a href="{% url 'products:productdetail' product_id=i.product_id %}">{{ i.product_name }}</a></h3>
+                <h6>Price: {{ i.product_price }}<br>
+                By:{{ i.product_seller }}</h6><br>
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+{% else %}
+    <h1>Welcome to Online Upskilling Course Company</h1>
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <h2>Join us today!</h2>
+                    <a href="{% url 'accounts:signup' %}">Signup Here</a><br><br>
+                    Already have an account?<br>
+                    <a href="{% url 'accounts:login' %}">Login Here</a><br>
+            </div>
+        </div>
+    </article>
+    
+{% endif %}
+{% endblock %}

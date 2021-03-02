@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <form action="{% url 'orders:createcancellationapproval' order_id=cancelledorder.order_id %}" method="POST">
+                    {% csrf_token %}
+                    <h3>Send request to Sales Executive for cancellation approval?</h3>
+                    Order ID: {{ cancelledorder.order_id }} <br>
+                    Customer Username: {{ cancelledorder.user }} <br>
+                    Amount: Rs {{ cancelledorder.amount }}/- <br><br>
+                    <input type="submit" value="Yes"></input>
+                    <a href="{% url 'products:home' %}">No</a>
+                </form>
+            </div>
+        </div>
+    </article>
+        
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <h1>All Cancelled Orders</h1><br>
+                <ol>
+                {% for i in orders %}
+                    <li><h5>Order ID: {{ i.order_id }}</h5></li> 
+                    Customer: {{ i.user }}<br>
+                    Order Amount: Rs {{ i.amount }}/-<br>
+                    Cancellation Date: {{ i.cancelled_order_date }}<br>
+                    <a href="{% url 'orders:detailcancelledorder' order_id=i.order_id %}">View Details</a><br>
+                    <br>
+                {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </article>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <h1>Welcome to Online Upskilling Course Company</h1>
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <h2>Sign up</h2>
+                <a href="{% url 'accounts:customersignup' %}">Customer Signup</a><br>
+                <a href="{% url 'accounts:customerexecutivesignup' %}">Customer Executives Signup</a><br>
+                <a href="{% url 'accounts:salesexecutivesignup' %}">Sales Executives Signup</a><br>
+            </div>
+        </div>
+    </article>
+
+{% endblock %}

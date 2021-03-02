@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <h1>Approval request for:</h1>
+                Order ID: {{ app_req.order_id }}<br>
+                Customer: {{ app_req.user }}<br>
+                Order Amount: Rs {{ app_req.amount }}/-<br>
+                Cancellation Date: {{ app_req.cancelled_order_date }}<br>
+                <form action="{% url 'orders:approverequest' order_id=app_req.order_id %}" method="POST" >
+                    {% csrf_token %}
+                    <input type="submit" value="Approve"></input>
+                    <a href="{% url 'orders:approvalrequestdetail' order_id=app_req.order_id %}">No</a>
+                </form>
+            </div>
+        </div>
+    </article>
+    
+{% endblock %}
