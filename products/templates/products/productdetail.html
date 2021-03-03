@@ -11,7 +11,10 @@
                 <h3>By: {{ product.product_seller }}</h3>
 
                 {% if user.is_customer %}
-                <a href="{% url 'orders:createorder'  product_id=product.product_id %}">Buy</a>
+                    <a href="{% url 'orders:createorder'  product_id=product.product_id %}">Buy</a>
+                {% elif user.is_salesexecutive %}
+                    <a href="{% url 'products:productedit' product_id=product.product_id %}">Edit Course</a>
+                    <a href="{% url 'products:productdelete' product_id=product.product_id %}">Delete Course</a>
                 {% endif %}
             </div>
         </div>

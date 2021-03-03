@@ -11,8 +11,8 @@
                     Order ID: {{ cancelledorder.order_id }} <br>
                     Customer Username: {{ cancelledorder.user }} <br>
                     Amount: Rs {{ cancelledorder.amount }}/- <br><br>
-                    <input type="submit" value="Yes"></input>
-                    <a href="{% url 'products:home' %}">No</a>
+                    <input class="btn btn-outline-info" type="submit" value="Yes"></input>
+                    <a class="btn btn-outline-info" href="{% url 'products:home' %}">No</a>
                 </form>
             </div>
         </div>

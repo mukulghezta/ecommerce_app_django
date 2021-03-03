@@ -11,6 +11,7 @@
                     <li><h5>Order ID: {{ i.order_id }}</h5></li>
                     Customer Username: {{ i.user }}<br>
                     Order Amount: Rs {{ i.amount }}/-<br>
+                    Ordered on: {{ i.order_date }}<br>
                     Order Cancellation Date: {{ i.cancelled_order_date }}<br>
                     <a href="{% url 'orders:approvalrequestdetail' order_id=i.order_id %}">View details</a><br><br>
                 {% endfor %}

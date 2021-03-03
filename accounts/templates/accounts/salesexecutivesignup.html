@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-  <div class="content-section">
-    <form method="post">
-      {% csrf_token %}
-      <fieldset class="form-group">
-        <legend class="border-bottom mb-4">Sales Executive Sign Up</legend>
-          {{ form|crispy }}
-      </fieldset>
-      <div class="form-group">
-        <button class="btn btn-outline-info" type="submit">Sign Up</button>
+
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <form method="post">
+          {% csrf_token %}
+            <fieldset class="form-group">
+              <legend class="border-bottom mb-4">Sales Executive Sign Up</legend>
+                {{ form|crispy }}
+            </fieldset>
+          <button class="btn btn-outline-info" type="submit">Sign Up</button>
+        </form>
       </div>
-    </form>
+    </div>
+  </article>
   
-  </div>
 {% endblock %}

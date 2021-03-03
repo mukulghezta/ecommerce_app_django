@@ -8,9 +8,10 @@
                 <ol>
                 {% for i in orders %}
                     <li><h5>Order ID: {{ i.order_id }}</h5></li> 
-                    Customer: {{ i.user }}<br>
-                    Order Amount: Rs {{ i.amount }}/-<br>
-                    Cancellation Date: {{ i.cancelled_order_date }}<br>
+                    Customer : {{ i.user }}<br>
+                    Order Amount : Rs {{ i.amount }}/-<br>
+                    Ordered on : {{ i.cancelled_order_date }}<br>
+                    Cancelled on : {{ i.order_date }}<br>
                     <a href="{% url 'orders:detailcancelledorder' order_id=i.order_id %}">View Details</a><br>
                     <br>
                 {% endfor %}

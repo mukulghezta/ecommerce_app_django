@@ -8,12 +8,12 @@ admin.site.register(Order, OrderAdmin)
 
 
 class CancelledOrderAdmin(admin.ModelAdmin):
-    list_display = ['order_id', 'user', 'amount', 'cancelled_order_date']
+    list_display = ['order_id', 'user', 'amount', 'order_date', 'cancelled_order_date']
 
 admin.site.register(CancelledOrder, CancelledOrderAdmin)
 
 
 class CancelledApprovalAdmin(admin.ModelAdmin):
-    list_display = ['order_id', 'user', 'amount', 'cancelled_order_date']
+    list_display = ['order_id', 'user', 'amount', 'order_date', 'cancelled_order_date', 'date_diff']
 
 admin.site.register(CancelledApproval, CancelledApprovalAdmin)

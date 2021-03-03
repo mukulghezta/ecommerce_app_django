@@ -8,11 +8,11 @@
                 <form action="{% url 'orders:createorder' product_id=product.product_id %}" method="POST">
                     {% csrf_token %}
                     <h4>Are you sure you want to buy this course?</h4>
-                    <input type="submit" value="Yes">
+                    <input class="btn btn-outline-info" type="submit" value="Yes">
+                    <a class="btn btn-outline-info" href="{% url 'products:home' %}">No</a>
                 </form>
-                    <a href="{% url 'products:home' %}">No</a>
             </div>
         </div>
     </article>
-    
+
 {% endblock %}
