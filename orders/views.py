@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from products.models import Product
-from accounts.models import Customer
+from accounts.models import Customer, CustomerExecutive, SalesExecutive
 from orders.models import Order, CancelledOrder, CancelledApproval
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 
 
 # CUSTOMER ACTIONS
@@ -51,8 +52,15 @@ def cancel_order(request, order_id):
         obj.user = logged_in_user
         obj.amount = order.amount
         obj.order_date = order.order_date
-
         obj.save()
+
+        send_mail(
+            "Order Cancelled",
+            "Dear Customer Executive,\nThe following order was cancelled by the customer.\nOrder ID: {}\nCourse: {}\nOrdered on: {}\nOrder Cancelled on:{}\n\nRegards,\nOnline Upskilling Course Company".format(order.order_id, order.course.product_name, order.order_date.date(), datetime.now().date()),
+            "",
+            [''],
+        )
+
         messages.info(request, "Order sent for Cancellation approval!!!")
         return redirect('orders:mycourses')
     return render(request, 'orders/customers/cancelorder.html', {'order':order})
@@ -131,9 +139,16 @@ def approve_request(request, order_id):
         app_req.delete()
         can_req.delete()
         ord_req.delete()
-        messages.info(request, "Order cancellation approved!!!")
+
+        send_mail(
+            "Order Cancellation Approval",
+            "Dear Customer,\nYour order cancellation has been approved. You will soon receive your refund.\n\nRegards,\nOnline Upskilling Course Company ",
+            "",
+            [app_req.user.email],
+        )
+
+        messages.info(request, "Order cancellation approved!!! Customer has been notified via email.")
         return redirect('orders:approvalrequestsall')
     return redirect('orders:approvalrequestsall')
-
 
 
