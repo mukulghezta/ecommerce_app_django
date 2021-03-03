@@ -15,15 +15,14 @@ def create_order(request, product_id):
     logged_in_user = get_object_or_404(Customer, username=str(request.user))
 
     if request.method == "POST":
-        a = Order()
-        a.user = logged_in_user
-        a.course = product
-        # a.product_seller = product.product_seller
-        a.amount = product.product_price
-        a.save()
-        messages.info(request,"Purchase Successful!")
+        obj = Order()
+        obj.user = logged_in_user
+        obj.course = product
+        obj.amount = product.product_price
+        obj.save()
+        messages.info(request,"Course Ordered!!!")
         return redirect('products:home')
-    return render(request, 'orders/customers/createorder.html', locals())
+    return render(request, 'orders/customers/createorder.html', {'product':product})
 
 # For customer to view the courses he has bought
 @login_required(login_url="/accounts/login/")
@@ -47,14 +46,13 @@ def cancel_order(request, order_id):
     logged_in_user = get_object_or_404(Customer, username=str(request.user))
 
     if request.method == "POST":
-        # order.delete()
-        a = CancelledOrder()
-        a.order_id = order
-        a.user = logged_in_user
-        a.amount = order.amount
-        a.order_date = order.order_date#
-        # a.cancelled_order_date = datetime.now()
-        a.save()
+        obj = CancelledOrder()
+        obj.order_id = order
+        obj.user = logged_in_user
+        obj.amount = order.amount
+        obj.order_date = order.order_date
+
+        obj.save()
         messages.info(request, "Order sent for Cancellation approval!!!")
         return redirect('orders:mycourses')
     return render(request, 'orders/customers/cancelorder.html', {'order':order})
@@ -79,28 +77,32 @@ def detail_cancelled_order(request, order_id):
 @login_required(login_url="/accounts/login/")
 def create_cancellation_approval(request, order_id):
     cancelledorder = CancelledOrder.objects.get(order_id=order_id)
-    order = Order.objects.get(order_id=order_id)#
-    # product = Product.objects.get(product_id)
+    order = Order.objects.get(order_id=order_id)
 
     if request.method == "POST":
-        a = CancelledApproval()
-        a.order_id = cancelledorder
-        a.user = cancelledorder.user
-        a.amount = cancelledorder.amount
-
-        a.order_date = cancelledorder.order_date
-        a.cancelled_order_date = cancelledorder.cancelled_order_date
-
+        obj = CancelledApproval()
+        obj.order_id = cancelledorder
+        obj.user = cancelledorder.user
+        obj.amount = cancelledorder.amount     
+        obj.order_date = cancelledorder.order_date
+        obj.cancelled_order_date = cancelledorder.cancelled_order_date
+            
+        # Calculating difference between order date and cancellation date
         i = order.order_date
         j = cancelledorder.cancelled_order_date
         k = j-i
-        l = k.days
-
-        a.date_diff = l
-        a.save()
+        no_of_days = k.days
+        obj.date_diff = no_of_days
+        
+        if no_of_days <= 7:
+            obj.refund_amount = order.amount
+        elif no_of_days>7 and no_of_days<=15:
+            obj.refund_amount = order.amount/2
+            
+        obj.save()
         messages.info(request, "Request sent to Sales Executive for cancellation approval!!!")
         return redirect('orders:allcancelledorders')
-    return render(request, 'orders/customerexecutives/createcancellationapproval.html', {'cancelledorder':cancelledorder})
+    return render(request, 'orders/customerexecutives/createcancellationapproval.html', {'cancelledorder':cancelledorder })
 
 ######################################################################################################
 
@@ -115,16 +117,8 @@ def approval_requests_all(request):
 @login_required(login_url="/accounts/login/")
 def approval_request_detail(request, order_id):
     app_req = CancelledApproval.objects.get(order_id=order_id)
-
-    order = Order.objects.get(order_id=order_id)
-    cancelledorder = CancelledOrder.objects.get(order_id=order_id)
-
-    a = order.order_date
-    b = cancelledorder.cancelled_order_date
-    c = b-a
-    d = c.days 
-
-    return render(request, 'orders/salesexecutives/approvalrequestdetail.html', {'app_req':app_req,'d':d})
+    days =  app_req.date_diff
+    return render(request, 'orders/salesexecutives/approvalrequestdetail.html', {'app_req':app_req,'days':days})
 
 #For sales executive to approve the request
 @login_required(login_url="/accounts/login/")
@@ -140,5 +134,6 @@ def approve_request(request, order_id):
         messages.info(request, "Order cancellation approved!!!")
         return redirect('orders:approvalrequestsall')
     return redirect('orders:approvalrequestsall')
+
 
 

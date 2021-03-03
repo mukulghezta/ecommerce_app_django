@@ -42,7 +42,7 @@ class salesexecutivesignup(CreateView):
         login(self.request, user)
         return redirect('products:home')
 
-
+# For all users to login 
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -59,7 +59,7 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form':form})
 
-
+# For all users to logout
 def logout_view(request):
     logout(request)
     return redirect('products:home')

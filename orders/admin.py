@@ -14,6 +14,6 @@ admin.site.register(CancelledOrder, CancelledOrderAdmin)
 
 
 class CancelledApprovalAdmin(admin.ModelAdmin):
-    list_display = ['order_id', 'user', 'amount', 'order_date', 'cancelled_order_date', 'date_diff']
+    list_display = ['order_id', 'user', 'amount', 'order_date', 'cancelled_order_date', 'date_diff', 'refund_amount']
 
 admin.site.register(CancelledApproval, CancelledApprovalAdmin)

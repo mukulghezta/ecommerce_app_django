@@ -5,15 +5,15 @@
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata">
-                <h1>Course</h1>
-                <h3>Course: {{ product.product_name }}</h3>
-                <h3>Price: {{ product.product_price }}</h3>
-                <h3>By: {{ product.product_seller }}</h3>
+                <h4>Course Details: </h4><br>
+                <h5>{{ product.product_name }}</h5>
+                <label>Price: {{ product.product_price }}<br>
+                Seller: {{ product.product_seller }}  </label><br>
 
                 {% if user.is_customer %}
-                    <a href="{% url 'orders:createorder'  product_id=product.product_id %}">Buy</a>
+                    <a href="{% url 'orders:createorder'  product_id=product.product_id %}">Order this course</a>
                 {% elif user.is_salesexecutive %}
-                    <a href="{% url 'products:productedit' product_id=product.product_id %}">Edit Course</a>
+                    
                     <a href="{% url 'products:productdelete' product_id=product.product_id %}">Delete Course</a>
                 {% endif %}
             </div>

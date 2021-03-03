@@ -7,7 +7,10 @@
             <div class="article-metadata">
                 <form action="{% url 'orders:createorder' product_id=product.product_id %}" method="POST">
                     {% csrf_token %}
-                    <h4>Are you sure you want to buy this course?</h4>
+                    <h4>Are you sure you want to order this course?</h4><br>
+                    <label>{{ product.product_name }}</label><br>
+                    <label>By {{ product.product_seller }}</label><br>
+                    <label>Price: Rs {{ product.product_price }}/-</label><br><br>
                     <input class="btn btn-outline-info" type="submit" value="Yes">
                     <a class="btn btn-outline-info" href="{% url 'products:home' %}">No</a>
                 </form>

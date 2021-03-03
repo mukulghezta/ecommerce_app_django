@@ -33,18 +33,18 @@ def productcreate(request):
     return render(request, 'products/productcreate.html', {'form':form})
 
 # For sales executive to edit his course
-@login_required(login_url="/accounts/login/")
-def productedit(request, product_id):
-    product = Product.objects.get(product_id=product_id)
-    form = CreateProductForm(instance=product)
+# @login_required(login_url="/accounts/login/")
+# def productedit(request, product_id):
+#     product = Product.objects.get(product_id=product_id)
+#     form = CreateProductForm(instance=product)
 
-    if request.method == "POST":
-        form = CreateProductForm(request.POST, instance=product)
-        if form.is_valid():
-            form.save()
-            messages.info(request,"Course updated successfully!!!")
-            return redirect('products:home')
-    return render(request, 'products/productcreate.html', {'form':form})
+#     if request.method == "POST":
+#         form = CreateProductForm(request.POST, instance=product)
+#         if form.is_valid():
+#             form.save()
+#             messages.info(request,"Course updated successfully!!!")
+#             return redirect('products:home')
+#     return render(request, 'products/productcreate.html', {'form':form})
 
 # For sales executive to delete his course
 def productdelete(request, product_id):
