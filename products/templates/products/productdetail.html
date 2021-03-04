@@ -7,7 +7,7 @@
             <div class="article-metadata">
                 <h4>Course Details: </h4><br>
                 <h5>{{ product.product_name }}</h5>
-                <label>Price: {{ product.product_price }}<br>
+                <label>Price: ₹ {{ product.product_price|floatformat:"0" }}<br>
                 Seller: {{ product.product_seller }}  </label><br>
 
                 {% if user.is_customer %}

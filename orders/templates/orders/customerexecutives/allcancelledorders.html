@@ -9,9 +9,9 @@
                 {% for i in orders %}
                     <li><h5>Order ID: {{ i.order_id }}</h5></li> 
                     Customer : {{ i.user }}<br>
-                    Order Amount : Rs {{ i.amount }}/-<br>
-                    Ordered on : {{ i.cancelled_order_date }}<br>
-                    Cancelled on : {{ i.order_date }}<br>
+                    Order Amount : ₹ {{ i.amount }}/-<br>
+                    Ordered on : {{ i.cancelled_order_date|date:"D, d M Y" }}<br>
+                    Cancelled on : {{ i.order_date|date:"D, d M Y" }}<br>
                     <a href="{% url 'orders:detailcancelledorder' order_id=i.order_id %}">View Details</a><br>
                     <br>
                 {% endfor %}

@@ -11,7 +11,7 @@
                 <div class="article-metadata"></div>
                 <h3><a href="{% url 'products:productdetail' product_id=i.product_id %}">{{ i.product_name }}</a></h3>
                 <h6>By:{{ i.product_seller }}<br>
-                Price: {{ i.product_price }}</h6><br>
+                Price: ₹ {{ i.product_price }}/-</h6><br>
             </div>
         </article>
     {% endfor %}
@@ -32,7 +32,7 @@
             <div class="article-metadata"></div>
             <h4><a href="{% url 'products:productdetail' product_id=i.product_id %}">{{ i.product_name }}</a></h4>
             <label>Seller: {{ i.product_seller }}</label>
-            <label>Price: {{ i.product_price }}</label>
+            <label>Price: ₹ {{ i.product_price }}/-</label>
             {% endfor %}
         </div>
     </article>
@@ -52,7 +52,7 @@
             <div class="media-body">
                 <div class="article-metadata">
                 <h4><a href="{% url 'products:productdetail' product_id=i.product_id %}">{{ i.product_name }}</a></h4>
-                <label>Price: {{ i.product_price }}<br>
+                <label>Price: ₹ {{ i.product_price }}/-<br>
                 By:{{ i.product_seller }}</label><br>
                 </div>
             </div>

@@ -8,12 +8,12 @@
                 <h1>Approval request for:</h1>
                 Order ID: {{ app_req.order_id }}<br>
                 Customer: {{ app_req.user }}<br>
-                Order Amount: Rs {{ app_req.amount }}/-<br>
-                Order Date: {{ app_req.order_date }}<br>
-                Cancellation Date: {{ app_req.cancelled_order_date }}<br><br>
+                Order Amount: ₹ {{ app_req.amount }}/-<br>
+                Order Date: {{ app_req.order_date|date:"D, d M Y" }}<br>
+                Cancellation Date: {{ app_req.cancelled_order_date|date:"D, d M Y" }}<br><br>
 
                 Order was cancelled within {{ days }} days.<br>
-                Refund amount = {{ app_req.refund_amount }}<br>
+                Refund amount: ₹ {{ app_req.refund_amount }}/-<br>
                 <form action="{% url 'orders:approverequest' order_id=app_req.order_id %}" method="POST" >
                     {% csrf_token %}
                     <input class="btn btn-outline-info" type="submit" value="Approve"></input>

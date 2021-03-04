@@ -9,7 +9,7 @@
                 <ol>
                 {% for i in courses %}                                        
                     <li><h5>{{ i.course }}</h5></li>                   
-                    Purchased on: {{ i.order_date }}<br>
+                    Purchased on: {{ i.order_date|date:"D, d M Y" }}<br>
                     <a href="{% url 'orders:mycoursedetail' order_id=i.order_id %}">View Details</a>                    
                     <br>
                     <br>

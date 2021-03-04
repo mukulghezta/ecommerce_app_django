@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from products.models import Product
 from accounts.models import Customer, CustomerExecutive, SalesExecutive
-from orders.models import Order, CancelledOrder, CancelledApproval
+from orders.models import Order, CancelledOrder, CancelledApproval, Email
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -45,6 +45,8 @@ def cancel_order(request, order_id):
     order = Order.objects.get(order_id=order_id)
     cancelled_order_id = order.order_id
     logged_in_user = get_object_or_404(Customer, username=str(request.user))
+    email = Email.objects.get(email_id=1)
+    customer_executive = CustomerExecutive.objects.get(username="user02")
 
     if request.method == "POST":
         obj = CancelledOrder()
@@ -55,11 +57,18 @@ def cancel_order(request, order_id):
         obj.save()
 
         send_mail(
-            "Order Cancelled",
-            "Dear Customer Executive,\nThe following order was cancelled by the customer.\nOrder ID: {}\nCourse: {}\nOrdered on: {}\nOrder Cancelled on:{}\n\nRegards,\nOnline Upskilling Course Company".format(order.order_id, order.course.product_name, order.order_date.date(), datetime.now().date()),
-            "",
-            [''],
+            email.email_subject,
+            email.email_body.format(order.order_id, order.course.product_name, order.order_date.date(), datetime.now().date()),
+            email.email_sender,
+            [customer_executive.email],
         )
+
+        # send_mail(
+        #     "Order Cancelled",
+        #     "Dear Customer Executive,\nThe following order was cancelled by the customer.\nOrder ID: {}\nCourse: {}\nOrdered on: {}\nOrder Cancelled on:{}\n\nRegards,\nOnline Upskilling Course Company".format(order.order_id, order.course.product_name, order.order_date.date(), datetime.now().date()),
+        #     "",
+        #     [customer_executive.email],
+        # )
 
         messages.info(request, "Order sent for Cancellation approval!!!")
         return redirect('orders:mycourses')
@@ -134,18 +143,26 @@ def approve_request(request, order_id):
     app_req = CancelledApproval.objects.get(order_id=order_id)
     can_req = CancelledOrder.objects.get(order_id=order_id)
     ord_req = Order.objects.get(order_id=order_id)
+    email = Email.objects.get(email_id=2)
 
     if request.method == "POST":
+        send_mail(
+            email.email_subject,
+            email.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id, app_req.refund_amount),
+            email.email_sender,
+            [app_req.user.email],
+        )
+
+        # send_mail(
+        #     "Order Cancellation Approval",
+        #     "Dear {},\nYour order of {}, (order id: {}) cancellation has been approved. You will soon receive your refund of amount ₹{}/-.\n\nRegards,\nOnline Upskilling Course Company ",
+        #     "",
+        #     [app_req.user.email],
+        # )
+
         app_req.delete()
         can_req.delete()
         ord_req.delete()
-
-        send_mail(
-            "Order Cancellation Approval",
-            "Dear Customer,\nYour order cancellation has been approved. You will soon receive your refund.\n\nRegards,\nOnline Upskilling Course Company ",
-            "",
-            [app_req.user.email],
-        )
 
         messages.info(request, "Order cancellation approved!!! Customer has been notified via email.")
         return redirect('orders:approvalrequestsall')

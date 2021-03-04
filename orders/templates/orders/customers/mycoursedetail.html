@@ -8,8 +8,8 @@
                 <h1> Course Detail</h1>
                 Course Name: {{ course.course }}<br>
                 Course ID: {{ course.order_id }}<br>
-                Course Price: Rs {{ course.amount }}/-<br>
-                Purchased on: {{ course.order_date }}<br><br>
+                Course Price: ₹ {{ course.amount }}/-<br>
+                Purchased on: {{ course.order_date|date:"D, d M Y" }}<br><br>
 
                 {% if cancelledorder %}
                     <h6>Order cancellation waiting for approval</h6>

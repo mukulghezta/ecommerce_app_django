@@ -8,7 +8,6 @@ class Order(models.Model):
     order_id       = models.AutoField(primary_key=True)
     user           = models.ForeignKey(Customer, default=None, on_delete=models.CASCADE)
     course         = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
-    # product_seller = models.CharField(max_length=100)
     amount         = models.DecimalField(max_digits=6, decimal_places=2)
     order_date     = models.DateTimeField(auto_now_add=True)
 
@@ -19,11 +18,9 @@ class Order(models.Model):
 class CancelledOrder(models.Model):
     order_id             = models.ForeignKey(Order, primary_key=True, on_delete=models.CASCADE)
     user                 = models.ForeignKey(Customer, default=None, on_delete=models.CASCADE)
-    # product_seller     = models.CharField(max_length=100)
     amount               = models.DecimalField(max_digits=6, decimal_places=2)
     order_date           = models.DateTimeField(auto_now_add=True)
     cancelled_order_date = models.DateTimeField(auto_now_add=True)
-    # refund_amount        = models.DecimalField(max_digits=6, decimal_places=2, default=0)
 
     def __str__(self):
         return str(self.order_id)
@@ -40,6 +37,18 @@ class CancelledApproval(models.Model):
 
     def __str__(self):
         return str(self.order_id)
+
+
+class Email(models.Model):
+    email_id         = models.IntegerField(primary_key=True)
+    email_type       = models.CharField(max_length=50)
+    email_subject    = models.CharField(max_length=50, null=True)
+    email_body       = models.TextField(null=True)
+    email_sender     = models.CharField(max_length=50, null=True, blank=True)
+    email_recipients = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return self.email_type
 
 
 
