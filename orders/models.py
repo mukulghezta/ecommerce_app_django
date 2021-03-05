@@ -51,4 +51,14 @@ class Email(models.Model):
         return self.email_type
 
 
+class Discount(models.Model):
+    discount_id      = models.IntegerField(primary_key=True)
+    discount_start   = models.IntegerField()
+    discount_end     = models.IntegerField()
+    discount_percent = models.DecimalField(max_digits=6, decimal_places=2)
+    
+
+    def __str__(self):
+        return str(self.discount_id)
+
 

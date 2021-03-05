@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from products.models import Product
 from accounts.models import Customer, CustomerExecutive, SalesExecutive
-from orders.models import Order, CancelledOrder, CancelledApproval, Email
+from orders.models import Order, CancelledOrder, CancelledApproval, Email, Discount
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -111,10 +111,15 @@ def create_cancellation_approval(request, order_id):
         no_of_days = k.days
         obj.date_diff = no_of_days
         
-        if no_of_days <= 7:
-            obj.refund_amount = order.amount
-        elif no_of_days>7 and no_of_days<=15:
-            obj.refund_amount = order.amount/2
+        # if no_of_days <= 7:
+        #     obj.refund_amount = order.amount
+        # elif no_of_days>7 and no_of_days<=15:
+        #     obj.refund_amount = order.amount/2
+
+        # discount_record = Discount.objects.get(no_of_days>discount_start and no_of_days<discount_end)
+        dis = Discount.objects.get(discount_start__lte=no_of_days, discount_end__gte=no_of_days)
+        obj.refund_amount = order.amount * dis.discount_percent
+        
             
         obj.save()
         messages.info(request, "Request sent to Sales Executive for cancellation approval!!!")
@@ -167,5 +172,4 @@ def approve_request(request, order_id):
         messages.info(request, "Order cancellation approved!!! Customer has been notified via email.")
         return redirect('orders:approvalrequestsall')
     return redirect('orders:approvalrequestsall')
-
 
