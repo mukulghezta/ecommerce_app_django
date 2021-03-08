@@ -15,12 +15,22 @@
             </div>
         </article>
     {% endfor %}
+
+    {% if products.has_previous %}
+        <a href="{% url 'products:home' %}?page={{ products.previous_page_number }}">Previous Page</a>
+    {% endif %}
+    {% if products.has_next %}  
+        <a href="{% url 'products:home' %}?page={{ products.next_page_number }}">Next Page</a>
+    {% endif %}
+    Page {{ products.number }} of {{ products.paginator.num_pages }}
+
 {% elif user.is_customerexecutive %}
     <h1>Welcome to Online Upskilling Course Company</h1>
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata"></div>
             <h3>Customer executive profile</h3><br>
+            <a href="{% url 'orders:allorders' %}">View all orders by customers</a><br>
             <a href="{% url 'orders:allcancelledorders' %}">View all cancelled orders by customers</a>
         </div>
     </article>
@@ -36,6 +46,15 @@
             {% endfor %}
         </div>
     </article>
+
+    {% if products.has_previous %}
+        <a href="{% url 'products:home' %}?page={{ products.previous_page_number }}">Previous Page</a>
+    {% endif %}
+    {% if products.has_next %}  
+        <a href="{% url 'products:home' %}?page={{ products.next_page_number }}">Next Page</a>
+    {% endif %}
+    Page {{ products.number }} of {{ products.paginator.num_pages }}
+
 {% elif user.is_salesexecutive %}
     <h1>Welcome to Online Upskilling Course Company</h1>
 
@@ -58,6 +77,15 @@
             </div>
         </article>
     {% endfor %}
+
+    {% if products.has_previous %}
+        <a href="{% url 'products:home' %}?page={{ products.previous_page_number }}">Previous Page</a>
+    {% endif %}
+    {% if products.has_next %}  
+        <a href="{% url 'products:home' %}?page={{ products.next_page_number }}">Next Page</a>
+    {% endif %}
+    Page {{ products.number }} of {{ products.paginator.num_pages }}
+
 {% else %}
     <h1>Welcome to Online Upskilling Course Company</h1>
     <article class="media content-section">

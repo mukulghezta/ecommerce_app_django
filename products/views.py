@@ -4,11 +4,21 @@ from .forms import CreateProductForm
 from accounts.models import SalesExecutive
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 # Display all products on the home page
 def home(request):
     products = Product.objects.all()
-    return render(request, 'products/home.html', {'products':products})
+    paginator = Paginator(products, 5)
+    page = request.GET.get('page')
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    return render(request, 'products/home.html', {'products':products, 'page':page})
 
 # Display the details of a course to everyone
 @login_required(login_url="/accounts/login/")

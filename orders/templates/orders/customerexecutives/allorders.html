@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <h1>All Orders</h1><br>
+                    <ol>
+                    {% for i in orders %}
+                        <li><h5>Order ID: {{ i.order_id }}</h5></li> 
+                        Customer : {{ i.user }}<br>
+                        Order Amount : ₹ {{ i.amount }}/-<br>
+                        Course Name: {{ i.course }}<br>
+                        Ordered on : {{ i.order_date|date:"D, d M Y" }}<br>
+                        <br>
+                    {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </article>
+
+
+
+{% endblock %}

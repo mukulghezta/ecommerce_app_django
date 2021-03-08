@@ -1,23 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-    <article class="media content-section">
-        <div class="media-body">
-            <div class="article-metadata">
-                <h1> Course Detail</h1>
-                Course Name: {{ course.course }}<br>
-                Course ID: {{ course.order_id }}<br>
-                Course Price: ₹ {{ course.amount }}/-<br>
-                Purchased on: {{ course.order_date|date:"D, d M Y" }}<br><br>
-
-                {% if cancelledorder %}
-                    <h6>Order cancellation waiting for approval</h6>
-                {% else %}
-                    <a href="{% url 'orders:cancelorder' order_id=course.order_id %}">Delete Course/Cancel Order</a>
-                {% endif %}
+    {% if course.user == logged_in_user%}
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <h1> Course Detail</h1>
+                    Course Name: {{ course.course }}<br>
+                    Course ID: {{ course.order_id }}<br>
+                    Course Price: ₹ {{ course.amount }}/-<br>
+                    Purchased on: {{ course.order_date|date:"D, d M Y" }}<br><br>
+                    {% if cancelledorder %}
+                        <h6>Order cancellation waiting for approval</h6>
+                    {% else %}
+                        <a href="{% url 'orders:cancelorder' order_id=course.order_id %}">Delete Course/Cancel Order</a>
+                    {% endif %}
+                </div>
             </div>
-        </div>
-    </article>
+        </article>
+    
+    {% else %}
+        <h4>Not Authorized to view this page.</h4>
+    {% endif %}
 
 {% endblock %}
