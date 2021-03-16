@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Order Invoice</title>
+        <style>
+            .headings{
+                text-align: center;
+            }
+            h1{
+                font-size: 24px;
+            }
+            h2{
+                font-size: 14px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class=headings>
+            <h1>Upskilling Course Company</h1><br>
+            <h2>Order Cancellation Approval</h2><br>
+        </div>
+        <div class=contents>
+            <h4>Your following order's cancellation request was approved.</h4>
+            Order ID: {{ order_id }}<br>
+            Customer Name: {{ user }}<br>
+            Ordered on: {{ order_date }}<br>
+            Order Cancelled on: {{ cancelled_order_date }}<br>
+            Order Amount: {{ amount }}<br>
+            Refund Amount: {{ refund_amount }}<br>
+            <br>
+            Regards<br>
+            Upskilling Course Company
+        </div>
+    </body>
+</html>

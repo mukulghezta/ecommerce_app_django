@@ -6,7 +6,11 @@ from orders.models import Order, CancelledOrder, CancelledApproval, Email, Disco
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
+import os
+from io import BytesIO
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 
 # CUSTOMER ACTIONS
@@ -57,21 +61,12 @@ def cancel_order(request, order_id):
         obj.amount = order.amount
         obj.order_date = order.order_date
         obj.save()
-
         send_mail(
             email.email_subject,
             email.email_body.format(order.order_id, order.course.product_name, order.order_date.date(), datetime.now().date()),
             email.email_sender,
-            [customer_executive.email],
+            [customer_executive.email, 'ghezta@gmail.com'],
         )
-
-        # send_mail(
-        #     "Order Cancelled",
-        #     "Dear Customer Executive,\nThe following order was cancelled by the customer.\nOrder ID: {}\nCourse: {}\nOrdered on: {}\nOrder Cancelled on:{}\n\nRegards,\nOnline Upskilling Course Company".format(order.order_id, order.course.product_name, order.order_date.date(), datetime.now().date()),
-        #     "",
-        #     [customer_executive.email],
-        # )
-
         messages.info(request, "Order sent for Cancellation approval!!!")
         return redirect('orders:mycourses')
     return render(request, 'orders/customers/cancelorder.html', {'order':order})
@@ -139,8 +134,13 @@ def create_cancellation_approval(request, order_id):
             #     obj.refund_amount = order.amount/2
 
             # discount_record = Discount.objects.get(no_of_days>discount_start and no_of_days<discount_end)
-            dis = Discount.objects.get(discount_start__lte=no_of_days, discount_end__gte=no_of_days)
-            obj.refund_amount = order.amount * dis.discount_percent
+
+            if no_of_days < 16:
+                dis = Discount.objects.get(discount_start__lte=no_of_days, discount_end__gte=no_of_days)
+                obj.refund_amount = order.amount * dis.discount_percent
+            else:
+                obj.refund_amount = order.amount
+
             obj.save()
             messages.info(request, "Request sent to Sales Executive for cancellation approval!!!")
             return redirect('orders:allcancelledorders')
@@ -172,34 +172,105 @@ def approval_request_detail(request, order_id):
     else:
         return HttpResponse('Unauthorized', status=401)
     
-#For sales executive to approve the request
+# For generating pdf invoice
+# def render_to_pdf(template_src, context_dict={}):
+#     template = get_template(template_src)
+#     html = template.render(context_dict)
+#     result = BytesIO()
+#     pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+#     if not pdf.err:
+#         return HttpResponse(result.getvalue(), content_type='application/pdf')
+#     return None
+
+# def generate_pdf(request, *args, **kwargs):
+#     template = get_template('orders/invoice.html')
+#     context = {
+#         "order_id": "order_id",
+#         "user": "user",
+#         "amount":"amount",
+#         "order_date":"order_date",
+#         "cancelled_order_date":"cancelled_order_date"
+#     }
+#     html = template.render(context)
+#     pdf = render_to_pdf('orders/invoice.html', context)
+#     if pdf:
+#         response = HttpResponse(pdf, content_type='application/pdf')
+#         filename = "Invoice_%s.pdf" %("12341231")
+#         return
+#     return pdf
+
+# For sales executive to approve the request
 @login_required(login_url="/accounts/login/")
 def approve_request(request, order_id):
     app_req = CancelledApproval.objects.get(order_id=order_id)
     can_req = CancelledOrder.objects.get(order_id=order_id)
     ord_req = Order.objects.get(order_id=order_id)
-    email = Email.objects.get(email_id=2)
 
-    if request.method == "POST":
-        send_mail(
-            email.email_subject,
-            email.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id, app_req.refund_amount),
-            email.email_sender,
-            [app_req.user.email],
-        )
+    emailapp = Email.objects.get(email_id=2)
+    emailrej = Email.objects.get(email_id=3)
 
-        # send_mail(
-        #     "Order Cancellation Approval",
-        #     "Dear {},\nYour order of {}, (order id: {}) cancellation has been approved. You will soon receive your refund of amount ₹{}/-.\n\nRegards,\nOnline Upskilling Course Company ",
-        #     "",
-        #     [app_req.user.email],
-        # )
 
+    if request.POST.get('approve'):
+
+        template = get_template('orders/cancellationapproval.html')
+        data = {
+        "order_id": str(ord_req.order_id),
+        "user": ord_req.user.username,
+        "order_date":app_req.order_date,
+        "cancelled_order_date":app_req.cancelled_order_date,
+        "amount":app_req.amount,
+        "refund_amount":app_req.refund_amount,
+        }
+        html = template.render(data)
+        result = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+        pdf = result.getvalue()
+        filename = 'Invoice_' + data['order_id'] + '.pdf'
+        template = get_template('orders/cancellationapproval.html')
+
+        email = EmailMessage(
+            emailapp.email_subject,
+            emailapp.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id, app_req.refund_amount),
+            emailapp.email_sender,
+            [app_req.user.email, 'ghezta@gmail.com'])
+        email.attach(filename, pdf, 'application/pdf')
+        email.send()
         app_req.delete()
         can_req.delete()
         ord_req.delete()
-
         messages.info(request, "Order cancellation approved!!! Customer has been notified via email.")
         return redirect('orders:approvalrequestsall')
-    return redirect('orders:approvalrequestsall')
+        
 
+    if request.POST.get('reject'):
+
+        template = get_template('orders/cancellationrejection.html')
+        data = {
+        "order_id": str(ord_req.order_id),
+        "user": ord_req.user.username,
+        "order_date":app_req.order_date,
+        "cancelled_order_date":app_req.cancelled_order_date,
+        "amount":app_req.amount,
+        "refund_amount":app_req.refund_amount,
+        }
+        html = template.render(data)
+        result = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+        pdf = result.getvalue()
+        filename = 'Invoice_' + data['order_id'] + '.pdf'
+        template = get_template('orders/cancellationrejection.html')
+
+        email = EmailMessage(
+        emailrej.email_subject,
+        emailrej.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id,app_req.refund_amount),
+        emailrej.email_sender,
+        [app_req.user.email, 'ghezta@gmail.com'])
+        email.attach(filename, pdf, 'application/pdf')
+        email.send()
+        app_req.delete()
+        can_req.delete()
+        ord_req.delete()
+        messages.info(request, "Order cancellation rejected!!! Customer has been notified via email.")
+        return redirect('orders:approvalrequestsall')
+
+    return redirect('orders:approvalrequestsall')
