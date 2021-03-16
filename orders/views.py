@@ -65,7 +65,7 @@ def cancel_order(request, order_id):
             email.email_subject,
             email.email_body.format(order.order_id, order.course.product_name, order.order_date.date(), datetime.now().date()),
             email.email_sender,
-            [customer_executive.email, 'ghezta@gmail.com'],
+            [customer_executive.email],
         )
         messages.info(request, "Order sent for Cancellation approval!!!")
         return redirect('orders:mycourses')
@@ -232,7 +232,7 @@ def approve_request(request, order_id):
             emailapp.email_subject,
             emailapp.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id, app_req.refund_amount),
             emailapp.email_sender,
-            [app_req.user.email, 'ghezta@gmail.com'])
+            [app_req.user.email])
         email.attach(filename, pdf, 'application/pdf')
         email.send()
         app_req.delete()
@@ -264,7 +264,7 @@ def approve_request(request, order_id):
         emailrej.email_subject,
         emailrej.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id,app_req.refund_amount),
         emailrej.email_sender,
-        [app_req.user.email, 'ghezta@gmail.com'])
+        [app_req.user.email])
         email.attach(filename, pdf, 'application/pdf')
         email.send()
         app_req.delete()
