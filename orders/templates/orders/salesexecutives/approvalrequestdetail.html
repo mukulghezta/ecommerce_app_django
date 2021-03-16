@@ -11,8 +11,13 @@
                 Order Amount: ₹ {{ app_req.amount }}/-<br>
                 Order Date: {{ app_req.order_date|date:"D, d M Y" }}<br>
                 Cancellation Date: {{ app_req.cancelled_order_date|date:"D, d M Y" }}<br><br>
-
+                
+                {% if days == 1 %}
+                    Order was cancelled within {{ days }} day.<br>
+                {% else %}
                 Order was cancelled within {{ days }} days.<br>
+                {% endif %}
+                
                 Refund amount: ₹ {{ app_req.refund_amount }}/-<br>
                 <form action="{% url 'orders:approverequest' order_id=app_req.order_id %}" method="POST" >
                     {% csrf_token %}

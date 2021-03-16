@@ -118,7 +118,7 @@ def create_cancellation_approval(request, order_id):
             obj.order_id = cancelledorder
             obj.user = cancelledorder.user
             obj.amount = cancelledorder.amount     
-            obj.order_date = cancelledorder.order_date
+            obj.order_date = order.order_date
             obj.cancelled_order_date = cancelledorder.cancelled_order_date
 
             # Calculating difference between order date and cancellation date
@@ -126,6 +126,8 @@ def create_cancellation_approval(request, order_id):
             j = cancelledorder.cancelled_order_date
             k = j-i
             no_of_days = k.days
+            if no_of_days == 0:
+                no_of_days = 1
             obj.date_diff = no_of_days
 
             # if no_of_days <= 7:
@@ -139,7 +141,7 @@ def create_cancellation_approval(request, order_id):
                 dis = Discount.objects.get(discount_start__lte=no_of_days, discount_end__gte=no_of_days)
                 obj.refund_amount = order.amount * dis.discount_percent
             else:
-                obj.refund_amount = order.amount
+                obj.refund_amount = 0
 
             obj.save()
             messages.info(request, "Request sent to Sales Executive for cancellation approval!!!")

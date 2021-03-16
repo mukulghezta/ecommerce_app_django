@@ -19,7 +19,7 @@ class CancelledOrder(models.Model):
     order_id             = models.ForeignKey(Order, primary_key=True, on_delete=models.CASCADE)
     user                 = models.ForeignKey(Customer, default=None, on_delete=models.CASCADE)
     amount               = models.DecimalField(max_digits=6, decimal_places=2)
-    order_date           = models.DateTimeField(auto_now_add=True)
+    order_date           = models.DateTimeField(blank=True, null=True)
     cancelled_order_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -30,8 +30,8 @@ class CancelledApproval(models.Model):
     order_id             = models.ForeignKey(CancelledOrder, primary_key=True, on_delete=models.CASCADE)
     user                 = models.ForeignKey(Customer, default=None, on_delete=models.CASCADE)
     amount               = models.DecimalField(max_digits=6, decimal_places=2)
-    order_date           = models.DateTimeField(auto_now_add=True)
-    cancelled_order_date = models.DateTimeField(auto_now_add=True)
+    order_date           = models.DateTimeField(blank=True, null=True)
+    cancelled_order_date = models.DateTimeField(blank=True, null=True)
     date_diff            = models.IntegerField()
     refund_amount        = models.DecimalField(max_digits=6, decimal_places=2, default=0)
 
