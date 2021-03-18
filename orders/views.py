@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from products.models import Product
 from accounts.models import User, Customer, CustomerExecutive, SalesExecutive
-from orders.models import Order, CancelledOrder, CancelledApproval, Email, Discount
+from orders.models import Order, CancelledOrder, CancelledApproval, Email, Discount, GST
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -19,13 +19,48 @@ from xhtml2pdf import pisa
 def create_order(request, product_id):
     product = Product.objects.get(product_id=product_id)
     logged_in_user = get_object_or_404(Customer, username=str(request.user))
+    email = Email.objects.get(email_id=1)
+    gst = GST.objects.get(id=1)
 
     if request.method == "POST":
         obj = Order()
+        obj.order_id
         obj.user = logged_in_user
         obj.course = product
         obj.amount = product.product_price
+        obj.gst_amount = product.product_price * gst.gst
+        obj.final_amount = obj.amount + obj.gst_amount
+        obj.order_date
         obj.save()
+
+        template = get_template('orders/orderplaced.html')
+        data = {
+        "order_id": str(obj.order_id),
+        "user": obj.user,
+        "course": obj.course,
+        "order_date":datetime.now().date(),
+        "amount": obj.amount,
+        "gst": obj.gst_amount,
+        "final_amount": obj.final_amount
+        }
+        html = template.render(data)
+        result = BytesIO()
+        pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+        pdf = result.getvalue()
+        filename = 'Invoice_' + data['order_id'] + '.pdf'
+        template = get_template('orders/orderplaced.html')
+
+
+        # Email for order placement
+        email = EmailMessage(
+            email.email_subject,
+            email.email_body.format(obj.user, obj.order_id, obj.course, datetime.now().date()),
+            email.email_sender,
+            [obj.user.email])
+        email.attach(filename, pdf, 'application/pdf')
+        email.send()
+
+
         messages.info(request,"Course Ordered!!!")
         return redirect('products:home')
     return render(request, 'orders/customers/createorder.html', {'product':product})
@@ -51,7 +86,7 @@ def cancel_order(request, order_id):
     order = Order.objects.get(order_id=order_id)
     cancelled_order_id = order.order_id
     logged_in_user = get_object_or_404(Customer, username=str(request.user))
-    email = Email.objects.get(email_id=1)
+    email = Email.objects.get(email_id=2)
     customer_executive = CustomerExecutive.objects.get(username="user02")
 
     if request.method == "POST":
@@ -59,8 +94,12 @@ def cancel_order(request, order_id):
         obj.order_id = order
         obj.user = logged_in_user
         obj.amount = order.amount
+        obj.gst_amount = order.gst_amount
+        obj.final_amount = order.final_amount
         obj.order_date = order.order_date
         obj.save()
+
+        # Email to customer executive for order cancellation notification
         send_mail(
             email.email_subject,
             email.email_body.format(order.order_id, order.course.product_name, order.order_date.date(), datetime.now().date()),
@@ -117,7 +156,9 @@ def create_cancellation_approval(request, order_id):
             obj = CancelledApproval()
             obj.order_id = cancelledorder
             obj.user = cancelledorder.user
-            obj.amount = cancelledorder.amount     
+            obj.amount = order.amount     
+            obj.gst_amount = order.gst_amount     
+            obj.final_amount = order.final_amount
             obj.order_date = order.order_date
             obj.cancelled_order_date = cancelledorder.cancelled_order_date
 
@@ -138,15 +179,16 @@ def create_cancellation_approval(request, order_id):
             # discount_record = Discount.objects.get(no_of_days>discount_start and no_of_days<discount_end)
 
             if no_of_days < 16:
+                amount = order.final_amount - order.gst_amount
                 dis = Discount.objects.get(discount_start__lte=no_of_days, discount_end__gte=no_of_days)
-                obj.refund_amount = order.amount * dis.discount_percent
+                obj.refund_amount = amount * dis.discount_percent
             else:
                 obj.refund_amount = 0
 
             obj.save()
             messages.info(request, "Request sent to Sales Executive for cancellation approval!!!")
             return redirect('orders:allcancelledorders')
-        return render(request, 'orders/customerexecutives/createcancellationapproval.html', {'cancelledorder':cancelledorder })
+        return render(request, 'orders/customerexecutives/createcancellationapproval.html', {'cancelledorder':cancelledorder, 'order':order })
     else:
         return HttpResponse('Unauthorized', status=401)
 
@@ -208,8 +250,8 @@ def approve_request(request, order_id):
     can_req = CancelledOrder.objects.get(order_id=order_id)
     ord_req = Order.objects.get(order_id=order_id)
 
-    emailapp = Email.objects.get(email_id=2)
-    emailrej = Email.objects.get(email_id=3)
+    emailapp = Email.objects.get(email_id=3)
+    emailrej = Email.objects.get(email_id=4)
 
 
     if request.POST.get('approve'):
@@ -220,7 +262,8 @@ def approve_request(request, order_id):
         "user": ord_req.user.username,
         "order_date":app_req.order_date,
         "cancelled_order_date":app_req.cancelled_order_date,
-        "amount":app_req.amount,
+        "course_price":app_req.amount,
+        "order_amount":app_req.final_amount,
         "refund_amount":app_req.refund_amount,
         }
         html = template.render(data)
@@ -234,7 +277,7 @@ def approve_request(request, order_id):
             emailapp.email_subject,
             emailapp.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id, app_req.refund_amount),
             emailapp.email_sender,
-            [app_req.user.email])
+            [app_req.user.email,])
         email.attach(filename, pdf, 'application/pdf')
         email.send()
         app_req.delete()

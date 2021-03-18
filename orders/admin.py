@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, CancelledOrder, CancelledApproval, Email, Discount
+from .models import Order, CancelledOrder, CancelledApproval, Email, Discount, GST
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['order_id', 'user', 'course', 'amount', 'order_date']
@@ -29,3 +29,5 @@ class DiscountAdmin(admin.ModelAdmin):
     list_display = ['discount_id', 'discount_start', 'discount_end', 'discount_percent']
 
 admin.site.register(Discount, DiscountAdmin)
+
+admin.site.register(GST)

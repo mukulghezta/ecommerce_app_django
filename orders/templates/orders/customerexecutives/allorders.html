@@ -11,7 +11,7 @@
                     {% for i in orders %}
                         <li><h5>Order ID: {{ i.order_id }}</h5></li> 
                         Customer : {{ i.user }}<br>
-                        Order Amount : ₹ {{ i.amount }}/-<br>
+                        Order Amount : ₹ {{ i.final_amount }}/-<br>
                         Course Name: {{ i.course }}<br>
                         Ordered on : {{ i.order_date|date:"D, d M Y" }}<br>
                         <br>

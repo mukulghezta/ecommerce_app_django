@@ -10,7 +10,8 @@
                 {% for i in app_req %}
                     <li><h5>Order ID: {{ i.order_id }}</h5></li>
                     Customer Username: {{ i.user }}<br>
-                    Order Amount: Rs {{ i.amount }}/-<br>
+                    Course Price: Rs {{ i.amount }}/-<br>
+                    Total Amount: Rs {{ i.final_amount }}/-<br>
                     Ordered on: {{ i.order_date|date:"D, d M Y" }}<br>
                     Order Cancellation Date: {{ i.cancelled_order_date|date:"D, d M Y" }}<br>
                     Refund Amount: ₹ {{ i.refund_amount }}/-<br>

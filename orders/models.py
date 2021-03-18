@@ -5,22 +5,26 @@ from accounts.models import Customer
 
 
 class Order(models.Model):
-    order_id       = models.AutoField(primary_key=True)
-    user           = models.ForeignKey(Customer, default=None, on_delete=models.CASCADE)
-    course         = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
-    amount         = models.DecimalField(max_digits=6, decimal_places=2)
-    order_date     = models.DateTimeField(auto_now_add=True)
+    order_id        = models.AutoField(primary_key=True)
+    user            = models.ForeignKey(Customer, default=None, on_delete=models.CASCADE)
+    course          = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
+    amount          = models.DecimalField(max_digits=6, decimal_places=2)
+    gst_amount      = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    final_amount    = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    order_date      = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.order_id)
 
 
 class CancelledOrder(models.Model):
-    order_id             = models.ForeignKey(Order, primary_key=True, on_delete=models.CASCADE)
-    user                 = models.ForeignKey(Customer, default=None, on_delete=models.CASCADE)
-    amount               = models.DecimalField(max_digits=6, decimal_places=2)
-    order_date           = models.DateTimeField(blank=True, null=True)
-    cancelled_order_date = models.DateTimeField(auto_now_add=True)
+    order_id                = models.ForeignKey(Order, primary_key=True, on_delete=models.CASCADE)
+    user                    = models.ForeignKey(Customer, default=None, on_delete=models.CASCADE)
+    amount                  = models.DecimalField(max_digits=6, decimal_places=2)
+    gst_amount              = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    final_amount            = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    order_date              = models.DateTimeField(blank=True, null=True)
+    cancelled_order_date    = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.order_id)
@@ -30,6 +34,8 @@ class CancelledApproval(models.Model):
     order_id             = models.ForeignKey(CancelledOrder, primary_key=True, on_delete=models.CASCADE)
     user                 = models.ForeignKey(Customer, default=None, on_delete=models.CASCADE)
     amount               = models.DecimalField(max_digits=6, decimal_places=2)
+    gst_amount           = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
+    final_amount         = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
     order_date           = models.DateTimeField(blank=True, null=True)
     cancelled_order_date = models.DateTimeField(blank=True, null=True)
     date_diff            = models.IntegerField()
@@ -60,5 +66,11 @@ class Discount(models.Model):
 
     def __str__(self):
         return str(self.discount_id)
+
+class GST(models.Model):
+    gst = models.DecimalField(max_digits=6  , decimal_places=2)
+
+    def __str__(self):
+        return str(self.gst)
 
 

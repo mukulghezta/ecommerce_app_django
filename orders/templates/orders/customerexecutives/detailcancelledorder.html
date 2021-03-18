@@ -8,7 +8,8 @@
                 <h1>Cancelled Order Details</h1>
                 Order ID: {{ order.order_id }}<br>
                 Customer Username: {{ order.user }}<br>
-                Order Amount: ₹ {{ order.amount }}/-<br>
+                Course Price: ₹ {{ order.amount }}/-<br>
+                Order Amount: ₹ {{ order.final_amount }}/-<br>
                 Ordered on : {{ order.order_date|date:"D, d M Y" }}<br>   
                 Order Cancelled on : {{ order.cancelled_order_date|date:"D, d M Y" }}<br><br>   
 

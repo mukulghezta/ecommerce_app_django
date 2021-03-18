@@ -10,7 +10,7 @@
                     <h3>Send request to Sales Executive for cancellation approval?</h3>
                     Order ID: {{ cancelledorder.order_id }} <br>
                     Customer Username: {{ cancelledorder.user }} <br>
-                    Amount: ₹ {{ cancelledorder.amount }}/- <br><br>
+                    Amount: ₹ {{ order.final_amount }}/- <br><br>
                     <input class="btn btn-outline-info" type="submit" value="Yes"></input>
                     <a class="btn btn-outline-info" href="{% url 'products:home' %}">No</a>
                 </form>

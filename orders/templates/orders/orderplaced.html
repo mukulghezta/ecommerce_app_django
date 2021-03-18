@@ -8,10 +8,10 @@
                 text-align: center;
             }
             h1{
-                font-size: 24px;
+                font-size: 26px;
             }
             h2{
-                font-size: 14px;
+                font-size: 16px;
             }
         </style>
     </head>
@@ -19,18 +19,18 @@
     <body>
         <div class=headings>
             <h1>Upskilling Course Company</h1><br>
-            <h2>Order Cancellation Approval</h2><br>
+            <h2>Order Invoice</h2><br>
         </div>
         <div class=contents>
-            <h4>Revised Invoice</h4>
-            <h4>Your following order's cancellation request was approved.</h4>
+            <h4>Dear {{ user }}, your order was placed successfully.</h4>
+            <h5>Order Details:</h5>
             Order ID: {{ order_id }}<br>
             Customer Name: {{ user }}<br>
+            Course Name: {{ course }}<br>
             Ordered on: {{ order_date|date:"D, d M Y" }}<br>
-            Order Cancelled on: {{ cancelled_order_date|date:"D, d M Y" }}<br>
-            Course Price: Rs {{ course_price }}/-<br>
-            Order Amount: Rs {{ order_amount }}/-<br>
-            Refund Amount: Rs {{ refund_amount }}/-<br>
+            Order Amount: Rs {{ amount|floatformat:2 }}/-<br>
+            GST: Rs {{ gst|floatformat:2 }}/-<br>
+            Total Amount: Rs {{ final_amount|floatformat:2 }}/-<br>
             <br>
             Regards<br>
             Upskilling Course Company
