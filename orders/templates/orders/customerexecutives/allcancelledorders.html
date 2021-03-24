@@ -4,19 +4,34 @@
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata">
-                <h1>All Cancelled Orders</h1><br>
-                <ol>
-                {% for i in orders %}
-                    <li><h5>Order ID: {{ i.order_id }}</h5></li> 
-                    Customer : {{ i.user }}<br>
-                    Course Price : ₹ {{ i.amount }}/-<br>
-                    Order Amount : ₹ {{ i.final_amount }}/-<br>
-                    Ordered on : {{ i.order_date|date:"D, d M Y" }}<br>
-                    Cancelled on : {{ i.cancelled_order_date|date:"D, d M Y" }}<br>
-                    <a href="{% url 'orders:detailcancelledorder' order_id=i.order_id %}">View Details</a><br>
-                    <br>
-                {% endfor %}
-                </ol>
+                <h1>All Cancelled Orders</h1>
+
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Course Price</th>
+                            <th>Order Amount</th>
+                            <th>Ordered on</th>
+                            <th>Cancelled on</th>
+                        </tr>
+                    </thead>
+                         
+                    {% for i in orders %}
+                    <tbody>
+                        <tr>
+                            <td><a href="{% url 'orders:detailcancelledorder' order_id=i.order_id %}">{{ i.order_id }}</a></td>
+                            <td>{{ i.user }}</td>
+                            <td>₹ {{ i.amount }}/-</td>
+                            <td>₹ {{ i.final_amount }}/-</td>
+                            <td>{{ i.order_date|date:"D, d M Y" }}</td>
+                            <td>{{ i.cancelled_order_date|date:"D, d M Y" }}</td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+                
             </div>
         </div>
     </article>

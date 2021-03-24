@@ -277,9 +277,10 @@ def approve_request(request, order_id):
             emailapp.email_subject,
             emailapp.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id, app_req.refund_amount),
             emailapp.email_sender,
-            [app_req.user.email,])
+            [app_req.user.email])
         email.attach(filename, pdf, 'application/pdf')
         email.send()
+
         app_req.delete()
         can_req.delete()
         ord_req.delete()
@@ -312,6 +313,7 @@ def approve_request(request, order_id):
         [app_req.user.email])
         email.attach(filename, pdf, 'application/pdf')
         email.send()
+
         app_req.delete()
         can_req.delete()
         ord_req.delete()
@@ -319,3 +321,4 @@ def approve_request(request, order_id):
         return redirect('orders:approvalrequestsall')
 
     return redirect('orders:approvalrequestsall')
+    

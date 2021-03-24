@@ -6,17 +6,31 @@
         <article class="media content-section">
             <div class="media-body">
                 <div class="article-metadata">
-                    <h1>All Orders</h1><br>
-                    <ol>
+                    <h1>All Orders</h1>
+                    
+                    <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Order Amount</th>
+                            <th>Course Name</th>
+                            <th>Ordered on</th>
+                        </tr>
+                    </thead>
+
                     {% for i in orders %}
-                        <li><h5>Order ID: {{ i.order_id }}</h5></li> 
-                        Customer : {{ i.user }}<br>
-                        Order Amount : ₹ {{ i.final_amount }}/-<br>
-                        Course Name: {{ i.course }}<br>
-                        Ordered on : {{ i.order_date|date:"D, d M Y" }}<br>
-                        <br>
+                        <tbody>
+                            <td>{{ i.order_id }}</td>
+                            <td>{{ i.user }}</td>
+                            <td>₹ {{ i.final_amount }}/-</td>
+                            <td>{{ i.course }}</td>
+                            <td>{{ i.order_date|date:"D, d M Y" }}</td>
+                        </tbody>
                     {% endfor %}
-                    </ol>
+                    
+                    </table>
+
                 </div>
             </div>
         </article>
