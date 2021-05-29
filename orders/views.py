@@ -56,7 +56,7 @@ def create_order(request, product_id):
             email.email_subject,
             email.email_body.format(obj.user, obj.order_id, obj.course, datetime.now().date()),
             email.email_sender,
-            [obj.user.email])
+            [obj.user.email, 'test@test.com'])
         email.attach(filename, pdf, 'application/pdf')
         email.send()
 
@@ -104,7 +104,7 @@ def cancel_order(request, order_id):
             email.email_subject,
             email.email_body.format(order.order_id, order.course.product_name, order.order_date.date(), datetime.now().date()),
             email.email_sender,
-            [customer_executive.email],
+            [customer_executive.email, 'test@test.com'],
         )
         messages.info(request, "Order sent for Cancellation approval!!!")
         return redirect('orders:mycourses')
@@ -273,11 +273,12 @@ def approve_request(request, order_id):
         filename = 'Invoice_' + data['order_id'] + '.pdf'
         template = get_template('orders/cancellationapproval.html')
 
+        # Email to customer for order cancellation approval
         email = EmailMessage(
             emailapp.email_subject,
             emailapp.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id, app_req.refund_amount),
             emailapp.email_sender,
-            [app_req.user.email])
+            [app_req.user.email, 'test@test.com'])
         email.attach(filename, pdf, 'application/pdf')
         email.send()
 
@@ -306,11 +307,12 @@ def approve_request(request, order_id):
         filename = 'Invoice_' + data['order_id'] + '.pdf'
         template = get_template('orders/cancellationrejection.html')
 
+        # Email to customer for order cancellation rejection
         email = EmailMessage(
         emailrej.email_subject,
         emailrej.email_body.format(ord_req.user.username, ord_req.course.product_name, ord_req.order_id,app_req.refund_amount),
         emailrej.email_sender,
-        [app_req.user.email])
+        [app_req.user.email, 'test@test.com'])
         email.attach(filename, pdf, 'application/pdf')
         email.send()
 
@@ -322,3 +324,6 @@ def approve_request(request, order_id):
 
     return redirect('orders:approvalrequestsall')
     
+
+
+
